@@ -1,3 +1,5 @@
+import { tournaments } from './reducers/tournaments';
+
 export interface TournamentDetails {
   id: string;
   name: string;
@@ -11,6 +13,11 @@ export interface TournamentDetails {
 }
 
 export interface TournamentState {
+  loadingTournaments: boolean;
   searchError?: boolean;
   tournaments?: Record<string, TournamentDetails>;
+}
+
+export interface State {
+  tournaments: ReturnType<typeof tournaments>;
 }

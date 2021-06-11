@@ -11,12 +11,22 @@ import HeaderContainer from './components/HeaderContainer';
 import { TournamentCardsContainer } from './components/TournamentCardsContainer';
 import { TournamentCard } from './components/TournamentCard';
 import { FETCH_TOURNAMENTS } from './actions';
+import {
+  selectTournamentIds,
+  selectTournamentLoading
+} from './selectors/tournaments';
+import H6 from './components/H6';
+import { useSelector } from './hooks/hooks';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(FETCH_TOURNAMENTS.request(undefined));
   }, []);
+
+  const tournamentIds = useSelector(selectTournamentIds);
+  console.log(tournamentIds, 'ids');
+  const loadingTournaments = useSelector(selectTournamentLoading);
 
   return (
     <Container>
@@ -25,32 +35,17 @@ const App: React.FC = () => {
         <Input value="Search Tournament..."></Input>
         <Button onClick={() => console.log('hi')}>Create Tournament</Button>
       </HeaderContainer>
-      <TournamentCardsContainer>
-        <TournamentCard
-          id="123"
-          title="Tournament A"
-          game="Rocket League"
-          organizer="Tim Burton"
-          participants={['Zach', 'Mike']}
-          start={1000000}
-        />
-        <TournamentCard
-          id="123"
-          title="Tournament A"
-          game="Rocket League"
-          organizer="Tim Burton"
-          participants={['Zach', 'Mike']}
-          start={1000000}
-        />
-        <TournamentCard
-          id="123"
-          title="Tournament A"
-          game="Rocket League"
-          organizer="Tim Burton"
-          participants={['Zach', 'Mike']}
-          start={1000000}
-        />
-      </TournamentCardsContainer>
+      {tournamentIds ? (
+        <TournamentCardsContainer>
+          {tournamentIds.map(id => (
+            <TournamentCard id={id} />
+          ))}
+        </TournamentCardsContainer>
+      ) : loadingTournaments ? (
+        <H6>Loading Tournaments...</H6>
+      ) : (
+        <H6>No tournaments found</H6>
+      )}
     </Container>
   );
 };
