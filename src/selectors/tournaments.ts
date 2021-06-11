@@ -13,7 +13,6 @@ export const selectTournamentLoading = (state: State): boolean => {
 export const selectTournamentIds = createSelector(
   selectTournamentsState,
   (tournamentsState: TournamentState): string[] | undefined => {
-    console.log(tournamentsState, 'stateeee');
     return tournamentsState?.tournaments
       ? Object.keys(tournamentsState.tournaments)
       : undefined;

@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from '../reducers';
 import { all } from 'redux-saga/effects';
 import { tournamentSideEffects } from '../sagas/tournaments';
+import { FETCH_TOURNAMENTS } from '../actions';
 
 export const getComposeForEnvironment = (): typeof compose =>
   composeWithDevTools({});
@@ -22,5 +23,7 @@ export function* rootSaga(): Generator {
 }
 
 sagaMiddleware.run(rootSaga);
+
+store.dispatch(FETCH_TOURNAMENTS.request(undefined));
 
 export default store;

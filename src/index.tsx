@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, useDispatch } from 'react-redux';
 import GlobalStyle from './GlobalStyle';
@@ -10,7 +10,6 @@ import Input from './components/Input';
 import HeaderContainer from './components/HeaderContainer';
 import { TournamentCardsContainer } from './components/TournamentCardsContainer';
 import { TournamentCard } from './components/TournamentCard';
-import { FETCH_TOURNAMENTS } from './actions';
 import {
   selectTournamentIds,
   selectTournamentLoading
@@ -20,9 +19,6 @@ import { useSelector } from './hooks/hooks';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(FETCH_TOURNAMENTS.request(undefined));
-  }, []);
 
   const tournamentIds = useSelector(selectTournamentIds);
   console.log(tournamentIds, 'ids');
