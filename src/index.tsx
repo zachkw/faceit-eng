@@ -16,6 +16,7 @@ import {
 } from './selectors/tournaments';
 import H6 from './components/H6';
 import { useSelector } from './hooks/hooks';
+import { ResultsTextContainer } from './components/ResultsTextContainer';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
@@ -37,10 +38,14 @@ const App: React.FC = () => {
             <TournamentCard id={id} />
           ))}
         </TournamentCardsContainer>
-      ) : loadingTournaments ? (
-        <H6>Loading Tournaments...</H6>
       ) : (
-        <H6>No tournaments found</H6>
+        <ResultsTextContainer>
+          {loadingTournaments ? (
+            <H6>Loading Tournaments...</H6>
+          ) : (
+            <H6>No tournaments found</H6>
+          )}
+        </ResultsTextContainer>
       )}
     </Container>
   );
