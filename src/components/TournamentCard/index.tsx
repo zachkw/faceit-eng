@@ -20,7 +20,10 @@ export const TournamentCard: React.FC<{ id: string }> = ({ id }) => {
       <H6>{tournamentDetails?.name}</H6>
       <H7>Organizer: {tournamentDetails.organizer}</H7>
       <H7>Game: {tournamentDetails.game}</H7>
-      {/* <H7>Participants: {tournamentDetails.participants.current}/{tournamentDetails.participants.max}</H7> */}
+      <H7>
+        Participants: {tournamentDetails.participants.current}/
+        {tournamentDetails.participants.max}
+      </H7>
       <H7>Start: {tournamentDetails.startDate}</H7>
       <ButtonContainer>
         <Button>Edit</Button>
