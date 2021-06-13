@@ -60,13 +60,10 @@ const App: React.FC = () => {
       <H4>FACEIT Tournaments</H4>
       <HeaderContainer>
         <Input
-          defaultValue={'Search Tournament...'}
           onChange={event =>
             setSearch(event.target.value ? event.target.value : undefined)
           }
-          onFocus={event => {
-            event.target.value = '';
-          }}
+          placeholder={'Search Tournament...'}
         ></Input>
         <Button onClick={handleCreateTournament}>Create Tournament</Button>
       </HeaderContainer>

@@ -37,7 +37,6 @@ export function* fetchTournamentsSaga(
     const tournaments = (yield call([res, res['json']])) as TournamentDetails[];
     yield put(FETCH_TOURNAMENTS.success(tournaments));
   } catch (err) {
-    console.log(err);
     yield put(FETCH_TOURNAMENTS.failure());
   }
 }
