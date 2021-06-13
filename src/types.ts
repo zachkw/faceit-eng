@@ -15,6 +15,7 @@ export interface TournamentDetails {
 export interface TournamentState {
   loadingTournaments: boolean;
   searchError?: boolean;
+  searchText?: string | undefined;
   tournaments: Record<string, TournamentDetails>;
 }
 

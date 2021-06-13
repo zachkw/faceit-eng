@@ -2,13 +2,13 @@ import React, { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { DELETE_TOURNAMENT, EDIT_TOURNAMENT_NAME } from '../../actions';
 import { useSelector } from '../../hooks/hooks';
-import { editTournamentNameSaga } from '../../sagas/tournaments';
 import { selectTournamentById } from '../../selectors/tournaments';
 import H6 from '../H6';
 import Button from './Button';
 import { ButtonContainer } from './ButtonContainer';
 import { Container } from './Container';
 import H7 from './H7';
+import { format } from 'date-fns';
 
 export const TournamentCard: React.FC<{ id: string }> = ({ id }) => {
   const dispatch = useDispatch();
@@ -30,6 +30,11 @@ export const TournamentCard: React.FC<{ id: string }> = ({ id }) => {
     }
   }, [dispatch, id]);
 
+  const startDate = format(
+    new Date(tournamentDetails?.startDate!),
+    'dd/MM/yyyy HH:mm:ss'
+  );
+
   if (!tournamentDetails) {
     return null;
   }
@@ -43,7 +48,7 @@ export const TournamentCard: React.FC<{ id: string }> = ({ id }) => {
         Participants: {tournamentDetails.participants.current}/
         {tournamentDetails.participants.max}
       </H7>
-      <H7>Start: {tournamentDetails.startDate}</H7>
+      <H7>Start: {startDate}</H7>
       <ButtonContainer>
         <Button onClick={editTournamentName}>Edit</Button>
         <Button onClick={deleteTournament}>Delete</Button>

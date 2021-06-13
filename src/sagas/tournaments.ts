@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from 'typed-redux-saga';
+import { call, put, takeEvery, select } from 'typed-redux-saga';
 import {
   ADD_TOURNAMENT,
   DELETE_TOURNAMENT,
@@ -12,6 +12,7 @@ import {
   API_TOURNAMENTS_URL_QUERY
 } from '../constants/api';
 import { TournamentDetails } from '../types';
+import { selectSearchText } from '../selectors/tournaments';
 
 const headers = new Headers({
   'Content-Type': 'application/json',
@@ -19,12 +20,16 @@ const headers = new Headers({
 });
 
 export function* fetchTournamentsSaga(
-  action: ReturnType<typeof FETCH_TOURNAMENTS.request>
+  action?: ReturnType<typeof FETCH_TOURNAMENTS.request>
 ): Generator {
   try {
+    const searchText: string = action?.payload
+      ? action.payload
+      : ((yield select(selectSearchText)) as string | undefined) || '';
+
     const res: Response = (yield call(
       fetch,
-      API_TOURNAMENTS_URL_QUERY(action.payload || '')
+      API_TOURNAMENTS_URL_QUERY(searchText)
     )) as Response;
     if (res.status >= 400) {
       throw new Error();
@@ -53,6 +58,7 @@ export function* addTournamentSaga(
     const tournament = (yield call([res, res['json']])) as TournamentDetails;
 
     yield put(ADD_TOURNAMENT.success(tournament));
+    yield call(fetchTournamentsSaga);
   } catch {
     yield put(ADD_TOURNAMENT.failure());
   }
@@ -76,6 +82,7 @@ export function* editTournamentNameSaga(
       throw new Error();
     }
     yield put(EDIT_TOURNAMENT_NAME.success());
+    yield call(fetchTournamentsSaga);
   } catch {
     yield put(EDIT_TOURNAMENT_NAME.failure());
   }
@@ -97,6 +104,7 @@ export function* deleteTournamentSaga(
       throw new Error();
     }
     yield put(DELETE_TOURNAMENT.success());
+    yield call(fetchTournamentsSaga);
   } catch {
     yield put(DELETE_TOURNAMENT.failure());
   }

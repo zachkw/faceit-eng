@@ -6,13 +6,14 @@ export const selectTournamentsState = (state: State): TournamentState => {
   return state.tournaments;
 };
 
-export const selectTournamentLoading = (state: State): boolean => {
-  return state.tournaments.loadingTournaments;
-};
+export const selectTournamentLoading = (state: State): boolean =>
+  state.tournaments.loadingTournaments;
 
-export const selectTournamentSearchError = (state: State): boolean => {
-  return state.tournaments.searchError ? state.tournaments.searchError : false;
-};
+export const selectTournamentSearchError = (state: State): boolean =>
+  state.tournaments.searchError ? state.tournaments.searchError : false;
+
+export const selectSearchText = (state: State): string | undefined =>
+  state.tournaments.searchText;
 
 export const selectTournamentIds = createSelector(
   selectTournamentsState,

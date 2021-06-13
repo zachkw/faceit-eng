@@ -13,7 +13,11 @@ export const tournaments: Reducer<
 > = (state: TournamentState = initialState, action) => {
   switch (action.type) {
     case getType(actions.FETCH_TOURNAMENTS.request):
-      return { ...initialState, loadingTournaments: true };
+      return {
+        ...initialState,
+        loadingTournaments: true,
+        searchText: action.payload
+      };
     case getType(actions.FETCH_TOURNAMENTS.success):
       return {
         ...state,
@@ -23,7 +27,7 @@ export const tournaments: Reducer<
         )
       };
     case getType(actions.FETCH_TOURNAMENTS.failure):
-      return { ...initialState, loadingTournaments: false, searchError: true };
+      return { ...state, loadingTournaments: false, searchError: true };
     default:
       return state;
   }
