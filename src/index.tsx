@@ -37,8 +37,8 @@ const App: React.FC = () => {
   const tournamentsSearchText = loadingTournaments
     ? 'Loading Tournaments...'
     : searchError
-    ? 'Something unexpected went wrong'
-    : 'No Tournaments Found';
+    ? 'Something unexpected went wrong.'
+    : 'No Tournaments Found.';
 
   const handleCreateTournament = () => {
     const enteredTournamentName = prompt('Please enter tournament name');
@@ -64,6 +64,9 @@ const App: React.FC = () => {
           onChange={event =>
             setSearch(event.target.value ? event.target.value : undefined)
           }
+          onFocus={event => {
+            event.target.value = '';
+          }}
         ></Input>
         <Button onClick={handleCreateTournament}>Create Tournament</Button>
       </HeaderContainer>
