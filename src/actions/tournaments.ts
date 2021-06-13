@@ -11,7 +11,7 @@ export const ADD_TOURNAMENT = createAsyncAction(
   '@TOURNAMENTS/ADD_REQUEST',
   '@TOURNAMENTS/ADD_SUCCESS',
   '@TOURNAMENTS/ADD_FAILURE'
-)<string, void, void>();
+)<string, TournamentDetails, void>();
 
 export const EDIT_TOURNAMENT_NAME = createAsyncAction(
   '@TOURNAMENTS/EDIT_NAME_REQUEST',

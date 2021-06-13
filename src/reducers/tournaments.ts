@@ -3,7 +3,8 @@ import * as actions from '../actions';
 import { TournamentState } from '../types';
 
 const initialState: TournamentState = {
-  loadingTournaments: false
+  loadingTournaments: false,
+  tournaments: {}
 };
 
 export const tournaments: Reducer<
@@ -12,7 +13,7 @@ export const tournaments: Reducer<
 > = (state: TournamentState = initialState, action) => {
   switch (action.type) {
     case getType(actions.FETCH_TOURNAMENTS.request):
-      return { loadingTournaments: true };
+      return { ...initialState, loadingTournaments: true };
     case getType(actions.FETCH_TOURNAMENTS.success):
       return {
         ...state,
@@ -22,7 +23,7 @@ export const tournaments: Reducer<
         )
       };
     case getType(actions.FETCH_TOURNAMENTS.failure):
-      return { ...state, loadingTournaments: false, searchError: true };
+      return { ...initialState, loadingTournaments: false, searchError: true };
     default:
       return state;
   }

@@ -10,6 +10,10 @@ export const selectTournamentLoading = (state: State): boolean => {
   return state.tournaments.loadingTournaments;
 };
 
+export const selectTournamentSearchError = (state: State): boolean => {
+  return state.tournaments.searchError ? state.tournaments.searchError : false;
+};
+
 export const selectTournamentIds = createSelector(
   selectTournamentsState,
   (tournamentsState: TournamentState): string[] | undefined => {

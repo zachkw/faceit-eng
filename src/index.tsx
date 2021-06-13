@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider, useDispatch } from 'react-redux';
 import GlobalStyle from './GlobalStyle';
@@ -12,27 +12,62 @@ import { TournamentCardsContainer } from './components/TournamentCardsContainer'
 import { TournamentCard } from './components/TournamentCard';
 import {
   selectTournamentIds,
-  selectTournamentLoading
+  selectTournamentLoading,
+  selectTournamentSearchError
 } from './selectors/tournaments';
-import H6 from './components/H6';
-import { useSelector } from './hooks/hooks';
+import { useCallbackState, useSelector } from './hooks/hooks';
 import { ResultsTextContainer } from './components/ResultsTextContainer';
+import { ADD_TOURNAMENT, FETCH_TOURNAMENTS } from './actions';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
 
+  const [search, setSearch] = useCallbackState<string | undefined>(
+    undefined,
+    (value: string | undefined) => {
+      dispatch(FETCH_TOURNAMENTS.request(value));
+    },
+    250
+  );
+
   const tournamentIds = useSelector(selectTournamentIds);
-  console.log(tournamentIds, 'ids');
   const loadingTournaments = useSelector(selectTournamentLoading);
+  const searchError = useSelector(selectTournamentSearchError);
+
+  const tournamentsSearchText = loadingTournaments
+    ? 'Loading Tournaments...'
+    : searchError
+    ? 'Something unexpected went wrong'
+    : 'No Tournaments Found';
+
+  const handleCreateTournament = () => {
+    const enteredTournamentName = prompt('Please enter tournament name');
+    if (enteredTournamentName) {
+      dispatch(ADD_TOURNAMENT.request(enteredTournamentName));
+    }
+  };
+
+  const retryFetchTournaments = useCallback(() => {
+    dispatch(FETCH_TOURNAMENTS.request(search));
+  }, [dispatch, search]);
+
+  useEffect(() => {
+    dispatch(FETCH_TOURNAMENTS.request(search));
+  }, [dispatch, search]);
 
   return (
     <Container>
       <H4>FACEIT Tournaments</H4>
       <HeaderContainer>
-        <Input value="Search Tournament..."></Input>
-        <Button onClick={() => console.log('hi')}>Create Tournament</Button>
+        <Input
+          defaultValue={'Search Tournament...'}
+          onChange={event =>
+            setSearch(event.target.value ? event.target.value : undefined)
+          }
+        ></Input>
+        <Button onClick={handleCreateTournament}>Create Tournament</Button>
       </HeaderContainer>
-      {tournamentIds ? (
+      {!loadingTournaments && tournamentIds?.length ? (
         <TournamentCardsContainer>
           {tournamentIds.map(id => (
             <TournamentCard id={id} />
@@ -40,10 +75,9 @@ const App: React.FC = () => {
         </TournamentCardsContainer>
       ) : (
         <ResultsTextContainer>
-          {loadingTournaments ? (
-            <H6>Loading Tournaments...</H6>
-          ) : (
-            <H6>No tournaments found</H6>
+          {tournamentsSearchText}
+          {searchError ?? (
+            <Button onClick={retryFetchTournaments}>Retry</Button>
           )}
         </ResultsTextContainer>
       )}

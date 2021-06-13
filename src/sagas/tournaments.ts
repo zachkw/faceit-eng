@@ -1,4 +1,4 @@
-import { call, put, select, takeEvery } from 'typed-redux-saga';
+import { call, put, takeEvery } from 'typed-redux-saga';
 import {
   ADD_TOURNAMENT,
   DELETE_TOURNAMENT,
@@ -8,7 +8,8 @@ import {
 import fetch, { Response } from 'cross-fetch';
 import {
   API_TOURNAMENTS_PATCH_URL,
-  API_TOURNAMENTS_URL
+  API_TOURNAMENTS_URL,
+  API_TOURNAMENTS_URL_QUERY
 } from '../constants/api';
 import { TournamentDetails } from '../types';
 
@@ -21,15 +22,14 @@ export function* fetchTournamentsSaga(
   action: ReturnType<typeof FETCH_TOURNAMENTS.request>
 ): Generator {
   try {
-    const res: Response = (yield call(fetch, API_TOURNAMENTS_URL)) as Response;
+    const res: Response = (yield call(
+      fetch,
+      API_TOURNAMENTS_URL_QUERY(action.payload || '')
+    )) as Response;
     if (res.status >= 400) {
       throw new Error();
     }
     const tournaments = (yield call([res, res['json']])) as TournamentDetails[];
-    action.payload &&
-      tournaments.filter(tournament =>
-        tournament.name.startsWith(action.payload!)
-      );
     yield put(FETCH_TOURNAMENTS.success(tournaments));
   } catch (err) {
     console.log(err);
@@ -50,7 +50,9 @@ export function* addTournamentSaga(
     if (res.status >= 400) {
       throw new Error();
     }
-    yield put(ADD_TOURNAMENT.success());
+    const tournament = (yield call([res, res['json']])) as TournamentDetails;
+
+    yield put(ADD_TOURNAMENT.success(tournament));
   } catch {
     yield put(ADD_TOURNAMENT.failure());
   }
@@ -64,7 +66,7 @@ export function* editTournamentNameSaga(
       fetch,
       API_TOURNAMENTS_PATCH_URL(action.payload.id),
       {
-        method: 'post',
+        method: 'patch',
         headers,
         body: JSON.stringify({ name: action.payload.name })
       }
@@ -85,7 +87,11 @@ export function* deleteTournamentSaga(
   try {
     const res: Response = (yield call(
       fetch,
-      API_TOURNAMENTS_PATCH_URL(action.payload.id)
+      API_TOURNAMENTS_PATCH_URL(action.payload.id),
+      {
+        method: 'delete',
+        headers
+      }
     )) as Response;
     if (res.status >= 400) {
       throw new Error();
