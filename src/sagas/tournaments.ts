@@ -24,7 +24,7 @@ export function* fetchTournamentsSaga(
 ): Generator {
   try {
     yield delay(250);
-    const res: Response = (yield call(
+    const res: Response = (yield* call(
       fetch,
       API_TOURNAMENTS_URL_QUERY(action.payload)
     )) as Response;
@@ -46,7 +46,7 @@ export function* addTournamentSaga(
   action: ReturnType<typeof ADD_TOURNAMENT.request>
 ): Generator {
   try {
-    const res = (yield call(fetch, API_TOURNAMENTS_URL, {
+    const res = (yield* call(fetch, API_TOURNAMENTS_URL, {
       method: 'post',
       headers,
       body: JSON.stringify({ name: action.payload })
@@ -92,7 +92,7 @@ export function* deleteTournamentSaga(
   action: ReturnType<typeof DELETE_TOURNAMENT.request>
 ): Generator {
   try {
-    const res: Response = (yield call(
+    const res: Response = (yield* call(
       fetch,
       API_TOURNAMENTS_URL_PATCH(action.payload.id),
       {
