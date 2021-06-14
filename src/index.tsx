@@ -26,7 +26,6 @@ import {
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
-  console.log('rerender');
   const [search, setSearch] = useCallbackState<string | undefined>(
     undefined,
     () => retryFetchTournaments(),
