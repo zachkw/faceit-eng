@@ -20,6 +20,7 @@ import { ResultsTextContainer } from './components/ResultsTextContainer';
 import { ADD_TOURNAMENT, FETCH_TOURNAMENTS } from './actions';
 
 const App: React.FC = () => {
+  console.log('rerender');
   const dispatch = useDispatch();
 
   const [search, setSearch] = useCallbackState<string | undefined>(
@@ -27,7 +28,7 @@ const App: React.FC = () => {
     (value: string | undefined) => {
       dispatch(FETCH_TOURNAMENTS.request(value));
     },
-    250
+    1000
   );
 
   const tournamentIds = useSelector(selectTournamentIds);

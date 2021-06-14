@@ -6,14 +6,23 @@ export const selectTournamentsState = (state: State): TournamentState => {
   return state.tournaments;
 };
 
-export const selectTournamentLoading = (state: State): boolean =>
-  state.tournaments.loadingTournaments;
+export const selectTournamentLoading = createSelector(
+  selectTournamentsState,
+  (tournamentsState: TournamentState): boolean =>
+    tournamentsState.loadingTournaments
+);
 
-export const selectTournamentSearchError = (state: State): boolean =>
-  state.tournaments.searchError ? state.tournaments.searchError : false;
+export const selectTournamentSearchError = createSelector(
+  selectTournamentsState,
+  (tournamentsState: TournamentState): boolean =>
+    tournamentsState.searchError ?? false
+);
 
-export const selectSearchText = (state: State): string | undefined =>
-  state.tournaments.searchText;
+export const selectSearchText = createSelector(
+  selectTournamentsState,
+  (tournamentsState: TournamentState): string | undefined =>
+    tournamentsState.searchText
+);
 
 export const selectTournamentIds = createSelector(
   selectTournamentsState,

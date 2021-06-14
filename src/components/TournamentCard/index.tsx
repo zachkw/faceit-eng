@@ -30,14 +30,14 @@ export const TournamentCard: React.FC<{ id: string }> = ({ id }) => {
     }
   }, [dispatch, id]);
 
-  const startDate = format(
-    new Date(tournamentDetails?.startDate!),
-    'dd/MM/yyyy HH:mm:ss'
-  );
-
   if (!tournamentDetails) {
     return null;
   }
+
+  const startDate = format(
+    new Date(tournamentDetails.startDate),
+    'dd/MM/yyyy HH:mm:ss'
+  );
 
   return (
     <Container>
