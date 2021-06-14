@@ -21,21 +21,21 @@ const headers = new Headers({
 });
 
 export function* fetchTournamentsSaga(
-  action?: ReturnType<typeof FETCH_TOURNAMENTS.request>
+  action: ReturnType<typeof FETCH_TOURNAMENTS.request>
 ): Generator {
   try {
-    const searchText: string = action?.payload
-      ? action.payload
-      : ((yield select(selectSearchText)) as string | undefined) || '';
-
     const res: Response = (yield call(
       fetch,
-      API_TOURNAMENTS_URL_QUERY(searchText)
+      API_TOURNAMENTS_URL_QUERY(action.payload)
     )) as Response;
+
     if (res.status >= 400) {
       throw new Error();
     }
-    const tournaments = (yield call([res, res['json']])) as TournamentDetails[];
+    const tournaments = (yield* call([
+      res,
+      res['json']
+    ])) as TournamentDetails[];
     yield put(FETCH_TOURNAMENTS.success(tournaments));
   } catch (err) {
     yield put(FETCH_TOURNAMENTS.failure());
@@ -55,10 +55,11 @@ export function* addTournamentSaga(
     if (res.status >= 400) {
       throw new Error();
     }
-    const tournament = (yield call([res, res['json']])) as TournamentDetails;
+    const tournament = (yield* call([res, res['json']])) as TournamentDetails;
 
-    yield put(ADD_TOURNAMENT.success(tournament));
-    yield call(fetchTournamentsSaga);
+    yield* put(ADD_TOURNAMENT.success(tournament));
+    const searchText = yield* select(selectSearchText);
+    yield* put(FETCH_TOURNAMENTS.request(searchText));
   } catch {
     yield put(ADD_TOURNAMENT.failure());
   }
@@ -68,7 +69,7 @@ export function* editTournamentNameSaga(
   action: ReturnType<typeof EDIT_TOURNAMENT_NAME.request>
 ): Generator {
   try {
-    const res: Response = (yield call(
+    const res: Response = (yield* call(
       fetch,
       API_TOURNAMENTS_URL_PATCH(action.payload.id),
       {
@@ -81,8 +82,9 @@ export function* editTournamentNameSaga(
     if (res.status >= 400) {
       throw new Error();
     }
-    yield put(EDIT_TOURNAMENT_NAME.success());
-    yield call(fetchTournamentsSaga);
+    yield* put(EDIT_TOURNAMENT_NAME.success());
+    const searchText = yield* select(selectSearchText);
+    yield put(FETCH_TOURNAMENTS.request(searchText));
   } catch {
     yield put(EDIT_TOURNAMENT_NAME.failure());
   }
@@ -103,8 +105,9 @@ export function* deleteTournamentSaga(
     if (res.status >= 400) {
       throw new Error();
     }
-    yield put(DELETE_TOURNAMENT.success());
-    yield call(fetchTournamentsSaga);
+    yield* put(DELETE_TOURNAMENT.success());
+    const searchText = yield* select(selectSearchText);
+    yield put(FETCH_TOURNAMENTS.request(searchText));
   } catch {
     yield put(DELETE_TOURNAMENT.failure());
   }

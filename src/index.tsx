@@ -20,7 +20,6 @@ import { ResultsTextContainer } from './components/ResultsTextContainer';
 import { ADD_TOURNAMENT, FETCH_TOURNAMENTS } from './actions';
 
 const App: React.FC = () => {
-  console.log('rerender');
   const dispatch = useDispatch();
 
   const [search, setSearch] = useCallbackState<string | undefined>(
@@ -53,8 +52,8 @@ const App: React.FC = () => {
   }, [dispatch, search]);
 
   useEffect(() => {
-    dispatch(FETCH_TOURNAMENTS.request(search));
-  }, [dispatch, search]);
+    dispatch(FETCH_TOURNAMENTS.request(undefined));
+  }, [dispatch]);
 
   return (
     <Container>
@@ -65,13 +64,13 @@ const App: React.FC = () => {
             setSearch(event.target.value ? event.target.value : undefined)
           }
           placeholder={'Search Tournament...'}
-        ></Input>
+        />
         <Button onClick={handleCreateTournament}>Create Tournament</Button>
       </HeaderContainer>
       {!loadingTournaments && tournamentIds?.length ? (
         <TournamentCardsContainer>
           {tournamentIds.map(id => (
-            <TournamentCard id={id} />
+            <TournamentCard key={id} id={id} />
           ))}
         </TournamentCardsContainer>
       ) : (
