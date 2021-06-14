@@ -17,17 +17,20 @@ import {
 } from './selectors/tournaments';
 import { useCallbackState, useSelector } from './hooks/hooks';
 import { ResultsTextContainer } from './components/ResultsTextContainer';
-import { ADD_TOURNAMENT, FETCH_TOURNAMENTS } from './actions';
+import {
+  ADD_TOURNAMENT,
+  DELETE_TOURNAMENT,
+  EDIT_TOURNAMENT_NAME,
+  FETCH_TOURNAMENTS
+} from './actions';
 
 const App: React.FC = () => {
   const dispatch = useDispatch();
-
+  console.log('rerender');
   const [search, setSearch] = useCallbackState<string | undefined>(
     undefined,
-    (value: string | undefined) => {
-      dispatch(FETCH_TOURNAMENTS.request(value));
-    },
-    1000
+    () => retryFetchTournaments(),
+    250
   );
 
   const tournamentIds = useSelector(selectTournamentIds);
@@ -43,7 +46,7 @@ const App: React.FC = () => {
   const handleCreateTournament = () => {
     const enteredTournamentName = prompt('Please enter tournament name');
     if (enteredTournamentName) {
-      dispatch(ADD_TOURNAMENT.request(enteredTournamentName));
+      dispatch(ADD_TOURNAMENT.request({ name: enteredTournamentName, search }));
     }
   };
 
@@ -54,6 +57,23 @@ const App: React.FC = () => {
   useEffect(() => {
     dispatch(FETCH_TOURNAMENTS.request(undefined));
   }, [dispatch]);
+
+  const deleteTournament = useCallback(
+    (id: string) => {
+      dispatch(DELETE_TOURNAMENT.request({ id, search }));
+    },
+    [dispatch, search]
+  );
+
+  const editTournamentName = useCallback(
+    (id: string, name: string) => {
+      const enteredTournamentName = prompt('New Tournament Name:');
+      if (enteredTournamentName) {
+        dispatch(EDIT_TOURNAMENT_NAME.request({ id, name, search }));
+      }
+    },
+    [dispatch, search]
+  );
 
   return (
     <Container>
@@ -70,7 +90,12 @@ const App: React.FC = () => {
       {!loadingTournaments && tournamentIds?.length ? (
         <TournamentCardsContainer>
           {tournamentIds.map(id => (
-            <TournamentCard key={id} id={id} />
+            <TournamentCard
+              key={id}
+              id={id}
+              remove={deleteTournament}
+              edit={editTournamentName}
+            />
           ))}
         </TournamentCardsContainer>
       ) : (

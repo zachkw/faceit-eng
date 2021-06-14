@@ -18,12 +18,6 @@ export const selectTournamentSearchError = createSelector(
     tournamentsState.searchError ?? false
 );
 
-export const selectSearchText = createSelector(
-  selectTournamentsState,
-  (tournamentsState: TournamentState): string | undefined =>
-    tournamentsState.searchText
-);
-
 export const selectTournamentIds = createSelector(
   selectTournamentsState,
   (tournamentsState: TournamentState): string[] | undefined => {

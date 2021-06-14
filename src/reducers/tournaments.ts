@@ -15,8 +15,7 @@ export const tournaments: Reducer<
     case getType(actions.FETCH_TOURNAMENTS.request):
       return {
         ...state,
-        loadingTournaments: true,
-        searchText: action.payload
+        loadingTournaments: true
       };
     case getType(actions.FETCH_TOURNAMENTS.success):
       return {

@@ -11,16 +11,16 @@ export const ADD_TOURNAMENT = createAsyncAction(
   '@TOURNAMENTS/ADD_REQUEST',
   '@TOURNAMENTS/ADD_SUCCESS',
   '@TOURNAMENTS/ADD_FAILURE'
-)<string, TournamentDetails, void>();
+)<{ name: string; search: string | undefined }, TournamentDetails, void>();
 
 export const EDIT_TOURNAMENT_NAME = createAsyncAction(
   '@TOURNAMENTS/EDIT_NAME_REQUEST',
   '@TOURNAMENTS/EDIT_NAME_SUCCESS',
   '@TOURNAMENTS/EDIT_NAME_FAILURE'
-)<{ id: string; name: string }, void, void>();
+)<{ id: string; name: string; search: string | undefined }, void, void>();
 
 export const DELETE_TOURNAMENT = createAsyncAction(
   '@TOURNAMENTS/DELETE_REQUEST',
   '@TOURNAMENTS/DELETE_SUCCESS',
   '@TOURNAMENTS/DELETE_FAILURE'
-)<{ id: string }, void, void>();
+)<{ id: string; search: string | undefined }, void, void>();

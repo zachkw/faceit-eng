@@ -1,6 +1,4 @@
 import React, { useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { DELETE_TOURNAMENT, EDIT_TOURNAMENT_NAME } from '../../actions';
 import { useSelector } from '../../hooks/hooks';
 import { selectTournamentById } from '../../selectors/tournaments';
 import H6 from '../H6';
@@ -10,25 +8,31 @@ import { Container } from './Container';
 import H7 from './H7';
 import { format } from 'date-fns';
 
-export const TournamentCard: React.FC<{ id: string }> = ({ id }) => {
-  const dispatch = useDispatch();
+export interface TournamentCardProps {
+  id: string;
+  remove: (id: string) => void;
+  edit: (id: string, name: string) => void;
+}
 
+export const TournamentCard: React.FC<TournamentCardProps> = ({
+  id,
+  edit,
+  remove
+}) => {
   const tournamentDetails = useSelector(state =>
     selectTournamentById(state, id)
   );
 
   const deleteTournament = useCallback(() => {
-    dispatch(DELETE_TOURNAMENT.request({ id: id }));
-  }, [dispatch, id]);
+    remove(id);
+  }, [id, remove]);
 
   const editTournamentName = useCallback(() => {
     const enteredTournamentName = prompt('New Tournament Name:');
     if (enteredTournamentName) {
-      dispatch(
-        EDIT_TOURNAMENT_NAME.request({ id: id, name: enteredTournamentName })
-      );
+      edit(id, enteredTournamentName);
     }
-  }, [dispatch, id]);
+  }, [edit, id]);
 
   if (!tournamentDetails) {
     return null;
