@@ -7,12 +7,13 @@ import {
 } from '../actions/tournaments';
 import fetch, { Response } from 'cross-fetch';
 import {
-  API_TOURNAMENTS_PATCH_URL,
+  API_TOURNAMENTS_URL_PATCH,
   API_TOURNAMENTS_URL,
   API_TOURNAMENTS_URL_QUERY
 } from '../constants/api';
 import { TournamentDetails } from '../types';
 import { selectSearchText } from '../selectors/tournaments';
+import { takeLatest } from 'redux-saga/effects';
 
 const headers = new Headers({
   'Content-Type': 'application/json',
@@ -69,7 +70,7 @@ export function* editTournamentNameSaga(
   try {
     const res: Response = (yield call(
       fetch,
-      API_TOURNAMENTS_PATCH_URL(action.payload.id),
+      API_TOURNAMENTS_URL_PATCH(action.payload.id),
       {
         method: 'patch',
         headers,
@@ -93,7 +94,7 @@ export function* deleteTournamentSaga(
   try {
     const res: Response = (yield call(
       fetch,
-      API_TOURNAMENTS_PATCH_URL(action.payload.id),
+      API_TOURNAMENTS_URL_PATCH(action.payload.id),
       {
         method: 'delete',
         headers
@@ -110,7 +111,7 @@ export function* deleteTournamentSaga(
 }
 
 export const tournamentSideEffects = [
-  takeEvery(FETCH_TOURNAMENTS.request, fetchTournamentsSaga),
+  takeLatest(FETCH_TOURNAMENTS.request, fetchTournamentsSaga),
   takeEvery(ADD_TOURNAMENT.request, addTournamentSaga),
   takeEvery(EDIT_TOURNAMENT_NAME.request, editTournamentNameSaga),
   takeEvery(DELETE_TOURNAMENT.request, deleteTournamentSaga)
